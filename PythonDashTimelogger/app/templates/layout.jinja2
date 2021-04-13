@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>{{ title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+</head>
+
+<body class="{{template}}">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Timelogger</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a {% if request.path == url_for('home') %} class="nav-link active" {% else %} class="nav-link" {% endif %} href={{url_for('home')}}>Home</a>
+      </li>
+
+       {% if current_user.is_authenticated %}
+  
+      <li class="nav-item">
+        <a {% if request.path == url_for('dash') %} class="nav-link active" {% else %} class="nav-link" {% endif %} href={{url_for('dash')}}>Timelogger</a>
+      </li>
+      {% else %}
+      
+      <li class="nav-item">
+        <p><a {% if request.path == url_for('user.login') %} class="nav-link active" {% else %} class="nav-link" {% endif %} href={{ url_for('user.login') }}>Sign in</a></p>
+      </li>
+      </li>
+           <li class="nav-item">
+        <p><a {% if request.path == url_for('user.register') %} class="nav-link active" {% else %} class="nav-link" {% endif %} href={{ url_for('user.register') }}>Create New Account</a></p>
+      </li>
+      </li>
+      {% endif %}
+    </ul>
+           {% if current_user.is_authenticated %}
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+      <small>
+      {{current_user.username }}
+      </small>
+<a {% if request.path == url_for('user.logout') %} class="nav-link active" {% else %} class="nav-link" {% endif %} href={{ url_for('user.logout') }}>Logout</a>
+      </li>
+    </ul>
+  </div>
+        {% endif %}
+
+  </div>
+</nav>
+  <div class="container">
+	  {% block content %}{% endblock %}
+  </div>
+    <div>
+        {% block flash_messages %}
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category=='error' %}
+                            {% set category='danger' %}
+                        {% endif %}
+                        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+            {%- endwith %}
+        {% endblock %}
+        </div>
+</body>
+</html>
+

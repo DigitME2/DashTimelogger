@@ -1,0 +1,21 @@
+{% extends "./layout.jinja2" %}
+{% block content %}
+<div class="card" >
+        <body class="dash-template">
+            <header>
+              <div class="nav-wrapper">
+                <a href="/" target="_top">
+                    <img src="/static/dist/img/uclan-logo-2020.png" class="logo"/>
+                  </a>
+                <nav>
+                </nav>
+            </div>
+            </header>
+            {% if current_user.is_authenticated %}
+            <iframe src="/dashapp/" title="Iframe Dash" style="position:absolute;top:0px;width:100%;height:100vh;"></iframe>
+            {% endif %}
+            <footer>
+            </footer>
+        </body>
+</div>
+{% endblock %}
