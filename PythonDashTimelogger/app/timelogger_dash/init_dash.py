@@ -66,7 +66,7 @@ def init_dashboard(server, db):
     
     # Change to read it from config
     engine = create_engine(
-        'mysql://server:gnlPdNTW1HhDuQGc@192.168.174.129:3306/work_tracking',
+        server.config['SQLALCHEMY_DATABASE_URI'],
         pool_recycle=3600, echo=True)
 
     Session = sessionmaker(bind=engine)
