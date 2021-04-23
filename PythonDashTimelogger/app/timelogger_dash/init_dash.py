@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine, exc
+from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import sessionmaker
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import login_required
@@ -48,6 +49,29 @@ def getTableStatus(db):
     else:
         return dict(zip(db_table_status_raw.keys(), db_table_status_raw.fetchall()))
 
+def checkTableExists(dbInsp, tableName):
+    if(dbInsp.has_table(tableName)):
+        return True;
+    else:
+        return False;
+
+def createUserTable(db):
+    try:
+        db_table_status_raw = db.session.execute("""
+        	CREATE TABLE `user` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `username` varchar(50) NOT NULL,
+	  `password` varchar(255) NOT NULL,
+	  `active` tinyint(1) DEFAULT NULL,
+	  PRIMARY KEY (`id`),
+	  UNIQUE KEY `username` (`username`)
+	) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;""")
+    except exc.SQLAlchemyError as e:
+        print('Error when creating User table: ', e)
+        return None
+    else:
+        return True
+
 def init_dashboard(server, db):
     """Create a Plotly Dash dashboard."""
     dash_app = dash.Dash(
@@ -63,16 +87,21 @@ def init_dashboard(server, db):
     dash_app.index_string = html_layout
 
     protect_dashviews(dash_app)
-    
-    # Change to read it from config
+    print('\nConfig:\n',server.config,'\n')
+
     engine = create_engine(
         server.config['SQLALCHEMY_DATABASE_URI'],
         pool_recycle=3600, echo=True)
 
     Session = sessionmaker(bind=engine)
 
+    if(not checkTableExists(inspect(engine), 'user')):
+        createUserTable(db)
+        
     init_callbacks(dash_app, db)
     max_records = getMaxRecordsFromTable(db)
+
+
 
     # Create Dash Layout
     dash_app.layout = html.Div(children=[
