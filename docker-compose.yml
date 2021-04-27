@@ -1,0 +1,23 @@
+version: "3"
+services:
+  timelog:
+    image: "timelog"
+    ports:
+    - "80:80"
+    - "3306:3306"     
+  dashtimelogger:
+    image: "timelogdash"
+    ports:
+    - "5000:5000"
+    volumes:
+    - "./PythonDashTimelogger/:/usr/src/app"
+    environment:
+      FLASK_DEBUG: 1
+      DEBUG: 1
+      DATABASE_USER: "server"
+      DATABASE_ADDRESS: "timelog"
+      DATABASE_PORT: "3306"
+      DATABASE_NAME: "work_tracking"
+      FLASK_APP: ./appstart.py 
+    depends_on:
+    - "timelog" 

@@ -9,13 +9,16 @@ load_dotenv(path.join(BASE_DIR, ".env"))
 class Config(object):
     # Flask
     SECRET_KEY = os.environ.get('SECRET_KEY') or "EdOhMW901yTkiQHbEdOhMW901yTkiQHb"
-    FLASK_ENV = 'development'
+    FLASK_ENV = os.environ.get('FLASK_ENV') or 'development'
+    ENV = os.environ.get('ENV') or 'production'
+    DEBUG = os.environ.get('DEBUG') or True
 
-    DATABASE_USER = 'server'
-    DATABASE_ADDRESS = '192.168.174.129'
-    DATABASE_PORT = '3306'
-    DATABASE_NAME = 'work_tracking'
-    DATABASE_PASSWORD = 'gnlPdNTW1HhDuQGc'
+    # DB
+    DATABASE_USER = os.environ.get('DATABASE_USER') or 'server'
+    DATABASE_ADDRESS = os.environ.get('DATABASE_ADDRESS') or '192.168.174.129'
+    DATABASE_PORT = os.environ.get('DATABASE_PORT') or '3306'
+    DATABASE_NAME = os.environ.get('DATABASE_NAME') or 'work_tracking'
+    DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD') or 'gnlPdNTW1HhDuQGc'
 
     # SQLAlchemy Database
     SQLALCHEMY_TRACK_MODIFICATIONS = False

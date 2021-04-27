@@ -49,11 +49,14 @@ def getTableStatus(db):
     else:
         return dict(zip(db_table_status_raw.keys(), db_table_status_raw.fetchall()))
 
+
 def checkTableExists(dbInsp, tableName):
+    print('table:', tableName, 'exists: ', dbInsp.has_table(tableName))	
     if(dbInsp.has_table(tableName)):
         return True;
     else:
         return False;
+
 
 def createUserTable(db):
     try:
@@ -72,6 +75,7 @@ def createUserTable(db):
     else:
         return True
 
+
 def init_dashboard(server, db):
     """Create a Plotly Dash dashboard."""
     dash_app = dash.Dash(
@@ -89,6 +93,7 @@ def init_dashboard(server, db):
     protect_dashviews(dash_app)
     print('\nConfig:\n',server.config,'\n')
 
+    print('\nSQLALCHEMY_DATABASE_URI:', server.config['SQLALCHEMY_DATABASE_URI'], '\n')
     engine = create_engine(
         server.config['SQLALCHEMY_DATABASE_URI'],
         pool_recycle=3600, echo=True)
