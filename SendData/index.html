@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <meta charset="utf-8">
+
+    <title>The HTML5</title>
+    <meta name="description" content="The HTML5">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/priority.css">
+
+</head>
+<body>
+    <header>
+        <h2 id="h1">Timelogger test data</h2>
+    </header>
+  <div>
+    <div>
+      <b>Timer:</b>
+      <b id='timerVal'>0 Seconds</b>
+      <b>Set:</b><b id='timerSetVal'></b>
+    </div>
+    <label>ON/OFF
+      <input type="checkbox" id='cOnOff'>
+    </label>
+    <label for="textIPURL">Timelogger URL:</label>
+    <input type="text" id="textIPURL" name="textIPURL" value='http://192.168.174.129/'>
+    <br>
+    <label for="mins">Min Seconds:</label>
+    <input type="number" id="mins" name="mins" min="1" max="259200" value=10>
+    <label for="maxs">Max Seconds:</label>
+    <input type="number" id="maxs" name="maxs" min="1" max="259200" value=60>
+    <div>
+      <label id="fromDateLabel" for="dueDate" class="jobDetailsLabel">From Date</label>
+      <input type="date" class="jobDetailsInput" id="fromDateInput">
+      <label id="toDateLabel" for="dueDate" class="jobDetailsLabel">To Date</label>
+      <input type="date" class="jobDetailsInput" id="toDateInput">
+    </div>
+    <div>
+        <button id='prodButton'>Get Products</button>
+        <label id="prodIdLabel" for="productIdDropDown" class="jobDetailsLabel">Product ID</label>
+        <select class="jobDetailsInput" id="prodIdDropDown"></select>
+    
+        <label class="control leftCol" for="nameSelect">Route</label>
+        <select class="control rightCol" id="selectRoute" onchange="loadRoute()">
+        </select>
+
+        <label class="control leftCol" for="textRouteName">Route Name</label>
+        <input type="text" id="textRouteName" class="control rightCol" pattern="^[A-Za-z0-9_ ]{1,50}$">
+
+        <label class="control leftCol" for="textRouteDesc">Route Description</label>
+        <textarea id="textRouteDesc" readonly class="control rightCol" cols="22" rows="10"></textarea>
+        <div class="leftCol" id="routeEditControlsContainer">
+            <label>Add station:</label>
+            <br>
+            <select id="selectStationNames">
+            </select>
+            <input type="button" id="btnAddStation" onclick="appendStationName()" value="Append to list" />
+            <input type="button" id="btnRemoveStation" onclick="removeLastStationName()" value="Delete last stage" />
+          </div>
+    </div>
+    <button id='bgen'>
+        Generate
+      </button>
+  </div>
+          <div id="dJobsTable">
+            <table id="jobsTable" class="scrollableTable"> Jobs
+                <thead>
+                    <tr>
+                        <th title="jobID">jobID</th>
+                        <th title="description">description</th>
+                        <th title="routeName">routeName</th>
+                        <th title="dueDate">dueDate</th>
+                        <th title="jobTotalCharge">jobTotalCharge</th>
+                        <th title="unitCount">unitCount</th>
+                        <th title="productId">productId</th>
+                        <th title="priority">priority</th>
+                        <th title="expectedDuration">expectedDuration</th>
+                    </tr>
+                </thead>
+                <tbody id="jobsTableBody">
+                </tbody>
+            </table>
+        </div>
+  
+  <div>
+    Status:
+    <b id='bStatus'></b>
+  </div>
+</body>
