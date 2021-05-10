@@ -3,6 +3,7 @@ from flask_user import UserManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
+from sqlalchemy import exc
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -48,5 +49,6 @@ def init_app():
 
         # Initialize Dash into our application
         app = init_dashboard(app, db)
+
         return app
         

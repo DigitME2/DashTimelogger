@@ -100,9 +100,15 @@ def init_dashboard(server, db):
 
     Session = sessionmaker(bind=engine)
 
-    if(not checkTableExists(inspect(engine), 'user')):
-        createUserTable(db)
-        
+    while True:
+        try:
+            if(not checkTableExists(inspect(engine), 'user')):
+                createUserTable(db)
+        except exc.SQLAlchemyError as e:
+            print("Couldn't connect to the database: ", e, " retrying.. ")
+            continue
+        break
+
     init_callbacks(dash_app, db)
     max_records = getMaxRecordsFromTable(db)
 
@@ -152,18 +158,6 @@ def init_dashboard(server, db):
         dcc.Graph(
             id='graph_main'
         ),
-        html.Div(children=[
-            html.B(id='text-lasthours',
-                   children='Show records from last: '),
-            dcc.Input(id="input_lasthour",
-                      type='number',
-                      placeholder="input type number",
-                      value='50',
-                      min='1'
-                      ),
-            html.B(id='text-hourslast',
-                   children=' hours'),
-        ]),
 
         dash_table.DataTable(
             id='datatable-last-hours',
@@ -186,10 +180,10 @@ def init_callbacks(app, db):
         Output("datatable-last-hours", "data"),
         Output("graph-last-hours", "figure"),
         [Input('interval', 'n_intervals')],
-        [Input('input_lasthour', 'value')])
+        [Input('input_number', 'value')])
     def display_data_figure(n, hours):
         recordsLastHours = getRecordsLastHours(hours, db)
-        
+       
         return recordsLastHours.to_dict('records'), updateGraphLastHours(recordsLastHours)
 
     @app.callback(
@@ -200,6 +194,7 @@ def init_callbacks(app, db):
         Input("input_number", "value"))
     def display_output(time_dropdown_value, interval_n_intervals, input_number_value):
         return 'Last update: ' + str(getCurrentDateTime()), updateGraph(input_number_value, time_dropdown_value, db)
+
 
 
 def getCurrentDateTime():
@@ -240,6 +235,7 @@ def getRecordsLastHours(hours, db):
         jobs = np.asarray(result.fetchall())
         df = pd.DataFrame(jobs, columns=result.keys())
     return df
+
 
 def emptyLayout():
         return {
@@ -295,7 +291,16 @@ def updateGraph(max_records, date_format, db):
     fig = px.line(dfg, y=dfg, title='Number of jobs')
 
     fig.data[0].mode = 'lines+markers'
-    fig.update_xaxes(rangeslider_visible=True)
+    fig.update_xaxes(rangeslider_visible=True,
+      rangeselector=dict(
+        buttons=list([
+            dict(count=1, label="1m", step="month", stepmode="backward"),
+            dict(count=6, label="6m", step="month", stepmode="backward"),
+            dict(count=1, label="YTD", step="year", stepmode="todate"),
+            dict(count=1, label="1y", step="year", stepmode="backward"),
+            dict(step="all")
+        ])
+    ))
     fig.update_layout(uirevision='true', xaxis_title=xLabel,
                       yaxis_title='jobs')
 
