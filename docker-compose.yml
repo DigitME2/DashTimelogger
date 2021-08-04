@@ -1,23 +1,47 @@
-version: "3"
+version: "3.8"
 services:
-  timelog:
+  timelogger_xampp:
     image: digitme2/timelogger
+    restart: always
     ports:
-    - "80:80"
-    - "3306:3306"     
+      - "80:80"
+      - "3306:3306"
+    volumes:
+      - type: volume
+        source: timelogger_db_vol
+        target: /opt/lampp/var/mysql 
+      - type: volume
+        source: timelogger_jobQrCodes_vol
+        target: /opt/lampp/htdocs/timelogger/generatedJobQrCodes
+      - type: volume
+        source: timelogger_userQrCodes_vol
+        target: /opt/lampp/htdocs/timelogger/generatedUserQrCodes
+      - type: volume
+        source: timelogger_productQrCodes_vol
+        target: /opt/lampp/htdocs/timelogger/generatedProductQrCodes
+      - type: volume
+        source: timelogger_stoppagesQrCodes_vol
+        target: /opt/lampp/htdocs/timelogger/generatedStoppagesQrCodes
   dashtimelogger:
-    image: andrewbosuc/timelogdash
+    image: digitme2/dashtimelogger
     ports:
     - "5000:5000"
-    volumes:
-    - "./PythonDashTimelogger/:/usr/src/app"
     environment:
       FLASK_DEBUG: 1
       DEBUG: 1
       DATABASE_USER: "server"
-      DATABASE_ADDRESS: "timelog"
+      DATABASE_ADDRESS: "timelogger_xampp"
       DATABASE_PORT: "3306"
       DATABASE_NAME: "work_tracking"
       FLASK_APP: ./appstart.py 
     depends_on:
-    - "timelog" 
+    - "timelogger_xampp"
+  
+
+volumes:
+  timelogger_db_vol:
+  timelogger_jobQrCodes_vol:
+  timelogger_userQrCodes_vol:
+  timelogger_productQrCodes_vol:
+  timelogger_stoppagesQrCodes_vol:
+  
